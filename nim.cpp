@@ -22,14 +22,14 @@ class Nim {
                 printGame();
                 generateFirstPlayer();
             }
-            validCol = nimV.size();
+            validLin = nimV.size();
             game();
         }
 
         void expectFirstPlayer() {
-            cout << "Digite 1 se voce quer ser o primeiro a jogar.\nDigite 2 se voce quer escolher o segundo a jogar.\n";
-            char c = getchar();
-            getchar();
+            cout << "Digite 1 se voce quer ser o primeiro a jogar.\nDigite 2 se voce quer ser o segundo a jogar.\n";
+            char c;
+            cin >> c;
             bool chosen = false;
             while (!chosen) {
                 if (c == '1') {
@@ -42,9 +42,7 @@ class Nim {
                 }
                 if (!chosen) {
                     cout << "Por favor, digite uma opcao valida.\n";
-                    fflush(stdin);
-                    c = getchar();
-                    getchar();
+                    cin >> c;
                 }
             }
         }
@@ -63,8 +61,8 @@ class Nim {
 
         void getTablePlayer() {
             cout << "Digite 1 se voce quer escolher o tabuleiro.\nDigite 2 se voce quer escolher o primeiro jogador.\n";
-            char c = getchar();
-            getchar();
+            char c;
+            cin >> c;
             bool chosen = false;
             while (!chosen) {
                 if (c == '1') {
@@ -77,9 +75,7 @@ class Nim {
                 }
                 if (!chosen) {
                     cout << "Por favor, digite uma opcao valida.\n";
-                    fflush(stdin);
-                    c = getchar();
-                    getchar();
+                    cin >> c;
                 }
             }
         }
@@ -146,20 +142,24 @@ class Nim {
                     i++;
             }
 
-            lastChangedCol = i+1;
+            lastChangedLin = i+1;
             int old = nimV[i];
             nimV[i] ^= magicNum;
             lastEliminatedNumber = old - nimV[i]; 
-            if (nimV[i] == 0) validCol--;
+            if (nimV[i] == 0) validLin--;
         }
 
         void expectMove() {
             int r, v;
-            cout << "Escreva o número da coluna seguido do número de pauzinhos que voce quer riscar.\n";
+            cout << "Escreva o número da linha seguido do número de pauzinhos que voce quer riscar.\n";
             cin >> r >> v;
             bool played = false;
             while (!played) {
-                if (r >= nimV.size() || r < 0 || v < 0 || v > nimV[r-1]) {
+                if (r > nimV.size() || r < 1) {
+                    cout << "Escreva valores validos.\n";
+                    cin >> r >> v;
+                }
+                else if (v < 0 || v > nimV[r-1]) {
                     cout << "Escreva valores validos.\n";
                     cin >> r >> v;
                 }
@@ -168,21 +168,21 @@ class Nim {
                 }
             }
             nimV[r-1] -= v;
-            if (nimV[r-1] == 0) validCol--;
+            if (nimV[r-1] == 0) validLin--;
         }
 
         void game() {
-            while (validCol) {
+            while (validLin) {
                 if (player == PC) {
                     cout << "Aperte ENTER para ver a jogada do computador...\n";
-                    getchar();
-                    getchar();
+                    cin.ignore();
+                    cin.ignore();
                     makeMove(getMagicNumber());
-                    cout << "Jogada do computador: (riscou " << lastEliminatedNumber << " da linha " << lastChangedCol << ")\n";
+                    cout << "Jogada do computador: (riscou " << lastEliminatedNumber << " da linha " << lastChangedLin << ")\n\n";
                 }
                 else {
                     expectMove();
-                    cout << "Sua jogada:\n";
+                    cout << "\nSua jogada:\n\n";
                 }
                 changeTurns();
                 printGame();
@@ -196,12 +196,12 @@ class Nim {
     private:
         vi nimV;
         bool player;
-        int validCol;
-        int lastChangedCol;
+        int validLin;
+        int lastChangedLin;
         int lastEliminatedNumber;
 
         void explainNim () {
-            cout << "Escreva as colunas:" << endl;
+            cout << "Escreva as linhas:" << endl;
         }
 
         int getMostSignificantBit(int n) {
@@ -220,6 +220,7 @@ class Nim {
 
 
 int main () {
+    srand((unsigned) time(NULL));
     Nim nim = Nim();
     return 0;
 }
