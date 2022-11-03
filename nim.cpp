@@ -128,8 +128,14 @@ class Nim {
         void makeMove(int magicNum) {
             if (magicNum == 0) {
                 int r = randFromInclusiveRange(0, nimV.size() - 1);
+                while (nimV[r] == 0) {
+                    r = randFromInclusiveRange(0, nimV.size() - 1);
+                }
                 int v = randFromInclusiveRange(1, nimV[r]);
                 nimV[r] -= v;
+                lastChangedLin = r + 1;
+                lastEliminatedNumber = v;
+                if (nimV[r] == 0) validLin--;
                 return;
             }
             int i = 0;
